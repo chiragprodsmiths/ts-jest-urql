@@ -4,7 +4,7 @@ import { never, fromValue } from 'wonka';
 import { render, cleanup, fireEvent, act } from '@testing-library/react';
 import { AuthProvider } from '../../auth/auth.provider';
 import Login from '../login.test';
-// import { FormData } from '../login.types';
+import { FormData } from '../login.types';
 
 afterEach(cleanup);
 
@@ -18,35 +18,11 @@ const mockClient: any = {
       },
     }),
   ),
-  executeMutation: jest.fn(() =>
-    fromValue({
-      fetching: true,
-      data: {
-        login: {
-          token: '',
-        },
-      },
-    }),
-  ),
+  executeMutation: jest.fn(() => never),
   executeSubscription: jest.fn(() => never),
 };
 
-// const [{ fetching }, login] = useMutation<LoginResponse, FormData>(loginQuery);
-
 describe('login', () => {
-  describe('renders', () => {
-    it('it renders with urql provider & auth provider', () => {
-      const { container } = render(
-        <Provider value={mockClient}>
-          <AuthProvider>
-            <Login />
-          </AuthProvider>
-        </Provider>,
-      );
-      expect(container).toBeDefined();
-    });
-  });
-
   describe('with invalid email', () => {
     it('renders email validation error', async () => {
       const { getByTestId } = render(
@@ -66,6 +42,7 @@ describe('login', () => {
         });
         fireEvent.click(submitEl);
       });
+      expect(mockClient.executeMutation).toBeCalledTimes(0);
       expect(getByTestId('userNameError')).toBeDefined();
     });
   });
@@ -89,16 +66,18 @@ describe('login', () => {
         });
         fireEvent.click(submitEl);
       });
+      expect(mockClient.executeMutation).toBeCalledTimes(0);
       expect(getByTestId('passwordError')).toBeDefined();
     });
   });
 
   describe('with valid input', () => {
-    it('it calls submit handler', async () => {
-      const onSubmit = jest.fn((e) => {
-        console.log(e);
-      });
-      const { getByTestId } = render(
+    it('it calls api with correct variables', async () => {
+      const variables: FormData = {
+        userName: 'test@test.com',
+        password: 'easyeasy',
+      };
+      const { queryByTestId, getByTestId } = render(
         <Provider value={mockClient}>
           <AuthProvider>
             <Login />
@@ -106,90 +85,26 @@ describe('login', () => {
         </Provider>,
       );
       const submitEl = getByTestId('submit');
-      submitEl.onclick = onSubmit;
+
       await act(async () => {
         const userNameEl = getByTestId('email');
         const passwordEl = getByTestId('password');
         fireEvent.change(userNameEl, {
           target: {
-            value: 'username',
+            value: variables.userName,
           },
         });
         fireEvent.change(passwordEl, {
           target: {
-            value: 'password',
+            value: variables.password,
           },
         });
         fireEvent.click(submitEl);
       });
-      expect(onSubmit).toBeCalled();
-      expect(onSubmit).toBeCalledWith({});
+      expect(queryByTestId('userNameError')).toBeNull();
+      expect(queryByTestId('passwordError')).toBeNull();
+      expect(mockClient.executeMutation).toBeCalledTimes(1);
+      expect(mockClient.executeMutation).toBeCalledWith(expect.objectContaining({ variables }));
     });
   });
-
-  // describe('with valid input and input variabels', () => {
-  //   it('it calls api with error response', async () => {
-  //     let submitErrors = false;
-  //     // mock submit handler
-  //     const loginMock = async (credentials: FormData): Promise<void> => {
-  //       if (credentials.userName !== 'validUserName' || credentials.password !== 'validPassword') {
-  //         submitErrors = true;
-  //       }
-  //     };
-
-  //     const onSubmit = jest.fn(async () => {
-  //       await loginMock();
-  //     });
-  //     const { getByTestId } = render(
-  //       <Provider value={mockClient}>
-  //         <Login />
-  //       </Provider>,
-  //     );
-  //     const submitEl = getByTestId('submit');
-  //     submitEl.onclick = onSubmit;
-  //     await act(async () => {
-  //       const userNameEl = getByTestId('email');
-  //       const passwordEl = getByTestId('password');
-  //       fireEvent.change(userNameEl, {
-  //         target: {
-  //           value: 'username',
-  //         },
-  //       });
-  //       fireEvent.change(passwordEl, {
-  //         target: {
-  //           value: 'password',
-  //         },
-  //       });
-  //       await fireEvent.click(submitEl);
-  //     });
-  //     expect(submitErrors).toBeTruthy();
-  //   });
-  // });
-
-  describe('with invalid credentials', () => {
-    it.todo('renders server validation error');
-  });
 });
-
-// describe('login', () => {
-//   it('login submit', async () => {
-//     describe('renders', () => {
-//       it.todo('it renders with urql provider & auth provider ');
-//     });
-//     // render form
-//     // get submit button
-//     // click submit button
-//     // expect submit not called if error
-//     // expect submit called if no error
-//     const { container } = render(
-//       <Provider value={mockClient}>
-//         <Login />
-//       </Provider>,
-//     );
-//     console.log(container);
-//     const submit = container.querySelector('button[(type = "submit")]');
-//     console.log(submit, container);
-//     expect(submit).toBeDefined();
-//     // await fireEvent.click(submit);
-//   });
-// });
