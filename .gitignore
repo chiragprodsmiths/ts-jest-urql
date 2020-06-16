@@ -1,0 +1,31 @@
+# TODO: make sure to add files here before your first commit
+
+# dependencies
+node_modules
+
+# production
+public
+.cache
+
+# testing
+coverage
+
+# logs
+logs
+*.log
+npm-debug.log*
+npm-error.log*
+yarn-debug.log*
+yarn-error.log*
+
+# misc
+.DS_Store
+
+# editors
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+.history/

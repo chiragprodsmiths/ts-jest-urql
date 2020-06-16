@@ -1,0 +1,20 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "new user added"
+    },
+    {
+      "id": 2,
+      "name": "new quotation added"
+    },
+    {
+      "id": 3,
+      "name": "new order created"
+    },
+    {
+      "id": 4,
+      "name": "contract signed"
+    }
+  ]
+}

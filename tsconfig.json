@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "rootDir": "src",
+    "baseUrl": "./",
+    "paths": {
+      "@": ["./", "node_modules/*"],
+      "*": ["src/*", "node_modules/*"]
+    },
+    "outDir": "public",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "jsx": "react",
+    "strict": true,
+    "alwaysStrict": true,
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "importHelpers": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "typeRoots": ["src/@types", "node_modules/@types"]
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "public", "tests", "**/*.spec.ts", "**/*.spec.tsx"],
+  "compileOnSave": false
+}
